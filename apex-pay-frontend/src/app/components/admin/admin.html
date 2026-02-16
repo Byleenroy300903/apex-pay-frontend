@@ -1,0 +1,94 @@
+<div class="terminal-wrapper">
+  <div class="header-meta">
+    <span>AUTH_USER: {{ adminUser }}</span>
+    <span>LOC: SYSTEM_CORE_ADMIN</span>
+    <span class="font-blink text-green-400">● ONLINE</span>
+  </div>
+
+  <h1 class="text-2xl font-bold mb-8 tracking-tighter uppercase">> NODE_MANAGEMENT_STATION</h1>
+
+  <div class="terminal-card">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="status-indicator"></div>
+      <h3 class="text-sm tracking-widest uppercase">Register_New_Directory_Node</h3>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="input-group">
+        <label>FULL_NAME</label>
+        <input [(ngModel)]="newEmployee.fullName" class="admin-input-field" placeholder="ENTRY_NAME">
+      </div>
+      <div class="input-group">
+        <label>HEDERA_ACCOUNT_ID</label>
+        <input [(ngModel)]="newEmployee.hederaAccountId" class="admin-input-field" placeholder="0.0.XXXX">
+      </div>
+      <div class="input-group">
+        <label>TAX_COUNTRY_CODE</label>
+        <input [(ngModel)]="newEmployee.taxCountry" class="admin-input-field" placeholder="ISO_ALPHA_2">
+      </div>
+      <div class="input-group">
+        <label>BASE_SALARY_USD</label>
+        <input [(ngModel)]="newEmployee.baseSalaryUsd" type="number" class="admin-input-field" placeholder="0.00">
+      </div>
+    </div>
+    <button (click)="onAdd()" class="terminal-btn w-full md:w-auto px-12">
+      INITIATE_NODE_CREATION
+    </button>
+  </div>
+
+  <div class="terminal-card">
+    <div class="table-container">
+      <p-table [value]="employees()" responsiveLayout="stack" breakpoint="960px">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>ID_REF</th>
+            <th>NODE_NAME</th>
+            <th>HEDERA_ADDRESS</th>
+            <th>SALARY_PARAM</th>
+            <th class="text-right">SYS_COMMANDS</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-emp>
+          <tr>
+            <td><span class="p-column-title">ID :</span>#{{emp.id}}</td>
+            <td><span class="p-column-title">NAME :</span>{{emp.fullName}}</td>
+            <td><span class="p-column-title">ADDR :</span><code class="text-xs">{{emp.hederaAccountId}}</code></td>
+            <div class="salary-input-wrapper">
+        <span class="currency-prefix">$</span>
+        <input type="number" 
+               [(ngModel)]="emp.baseSalaryUsd" 
+               (change)="onUpdate(emp)" 
+               class="salary-edit-input">
+      </div>
+            <td class="text-right">
+      <button (click)="confirmDelete(emp)" class="btn-terminate">
+        <span class="icon">×</span> TERMINATE_NODE
+      </button>
+    </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <div class="footer-meta">
+    <span>CRYPTO_LAYER: HEDERA_HASHGRAPH</span>
+    <span>TS_SYNC: {{ today | date:'yyyy.MM.dd HH:mm:ss' }}</span>
+  </div>
+
+  <div class="vintage-overlay" *ngIf="deleteVisible">
+    <div class="vintage-popup">
+      <div class="popup-header">
+        <span>CRITICAL_OVERRIDE</span>
+      </div>
+      <div class="popup-body">
+        <p class="mb-4">You are about to purge node:</p>
+        <p class="text-lg text-green-400 mb-6 underline">{{selectedForDelete?.fullName}}</p>
+        <div class="flex flex-col gap-3">
+          <button class="terminal-btn border-red-500" (click)="executeDelete()">CONFIRM_PURGE</button>
+          <button class="terminal-btn opacity-50" (click)="deleteVisible = false">ABORT_ACTION</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

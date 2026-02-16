@@ -1,0 +1,48 @@
+<div class="terminal-wrapper">
+  <div class="header">
+    <h1 class="flex items-center gap-3 text-2xl font-bold uppercase tracking-widest">
+      <span class="status-indicator"></span> 
+      System Diagnostic Logs
+    </h1>
+    
+    <div class="header-meta">
+      <span>LOGGED_IN: <span class="text-white">ADMIN_SYSTEM</span></span>
+      <span>NODE: <span class="text-white">HEDERA_TESTNET_792</span></span>
+      <span>DATE: <span class="text-white">{{ today | date:'yyyy.MM.dd HH:mm:ss' }}</span></span>
+    </div>
+  </div>
+
+  <div class="terminal-card p-0 overflow-hidden">
+    <div class="console-box">
+      <div class="log-row log-header">
+        <span class="col-time">TIMESTAMP</span>
+        <span class="col-cat">CATEGORY</span>
+        <span class="col-event">EVENT_DESCRIPTION</span>
+        <span class="col-stat text-right">STATUS</span>
+      </div>
+
+      <div class="log-stream">
+        <div class="log-row current-line">
+          <span class="col-time">{{ today | date:'HH:mm:ss' }}</span>
+          <span class="col-cat">[SYS]</span>
+          <span class="col-event font-blink">RECVING_LIVE_STREAM...<span class="cursor">_</span></span>
+          <span class="col-stat text-green-500">ACTIVE</span>
+        </div>
+
+        <div *ngFor="let log of logs()" class="log-row fade-in">
+          <span class="col-time">{{ log.timestamp }}</span>
+          <span class="col-cat">[{{ log.category }}]</span>
+          <span class="col-event">> {{ log.event }}</span>
+          <span [class]="'col-stat ' + log.status.toLowerCase()">
+            {{ log.status }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-meta">
+    <span>SYSTEM_ENCRYPTION: <span class="text-white">AES-256</span></span>
+    <span>CONNECTION_STRENGTH: <span class="text-white">98%</span></span>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+// Uniform Wrapper
+.terminal-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// Spacing Utilities (Must match Dashboard)
+.header-meta, .footer-meta {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 0;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.header-meta {
+  border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+  margin-bottom: 25px;
+}
+
+.footer-meta {
+  margin-top: 30px;
+  border-top: 1px dashed rgba(0, 255, 65, 0.2);
+  opacity: 0.6;
+}
+
+// Console Logic
+.console-box {
+  background: rgba(0, 10, 0, 0.8);
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.log-stream {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: #00ff41; }
+}
+
+.log-row {
+  display: flex;
+  padding: 10px 1.5rem;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+  gap: 20px;
+  align-items: center;
+
+  &.log-header {
+    background: #00ff41;
+    color: #000;
+    font-weight: 900;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+}
+
+// Responsive Column Widths
+.col-time { width: 160px; flex-shrink: 0; color: rgba(0, 255, 65, 0.5); }
+.col-cat  { width: 100px; flex-shrink: 0; color: #00ff41; }
+.col-event { flex-grow: 1; color: #fff; }
+.col-stat { 
+  width: 80px; flex-shrink: 0;
+  &.success { color: #00ff41; }
+  &.warn { color: #ffcc00; }
+  &.fail { color: #ff0000; }
+}
+
+// Mobile Adjustments
+@media (max-width: 768px) {
+  .col-time, .col-cat { display: none; } // Hide non-essential columns on small screens
+  .log-row { padding: 10px; font-size: 11px; }
+  .header h1 { font-size: 1.2rem; }
+}
+
+.cursor { animation: cursor-blink 1s step-start infinite; }
+@keyframes cursor-blink { 50% { opacity: 0; } }

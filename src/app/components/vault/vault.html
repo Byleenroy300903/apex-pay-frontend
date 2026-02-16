@@ -1,0 +1,66 @@
+<div class="terminal-wrapper">
+  <div *ngIf="isLocked()" class="flex flex-col items-center justify-center min-h-[70vh]">
+    <div class="terminal-card security-terminal border-red-500 shadow-red">
+      <div class="scanline"></div>
+      <h2 class="text-red-500 text-2xl font-bold mb-2 font-blink tracking-tighter">
+        <i class="pi pi-exclamation-triangle"></i> ACCESS_RESTRICTED
+      </h2>
+      <p class="text-[10px] mb-8 opacity-60 tracking-widest">ENCRYPTION_LAYER: SH-512 // LEVEL_4_REQUIRED</p>
+      
+      <div class="mb-8">
+        <label class="block text-[10px] mb-3 text-left opacity-50 uppercase">Input_Auth_Code:</label>
+        <input type="password" 
+               [(ngModel)]="pinInput"
+               class="terminal-input"
+               maxlength="4"
+               placeholder="****"
+               (keyup.enter)="verifyAccess()"/>
+      </div>
+      
+      <button class="retro-btn btn-danger w-full" (click)="verifyAccess()">
+        [ EXECUTE_VALIDATION ]
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLocked()" class="fade-in">
+    <div class="header mb-10">
+      <div class="flex justify-between items-baseline border-b-2 border-green-500 pb-2">
+        <h1 class="text-3xl font-bold uppercase tracking-widest">
+          Vault_Management_v4.0
+        </h1>
+        <span class="text-xs font-mono text-green-500">SESSION: 0xADMIN_SECURE</span>
+      </div>
+      
+      <div class="header-meta mt-2">
+        <span>HEDERA_ID: <span class="text-white">0.0.7925123</span></span>
+        <button (click)="isLocked.set(true)" class="retro-link text-red-500">
+          [ TERMINATE_LINK ]
+        </button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="terminal-card phosphor-glow">
+        <div class="text-[10px] opacity-60 mb-4 tracking-[0.2em]">> TOTAL_LIQUIDITY</div>
+        <div class="text-6xl font-bold mb-6 tabular-nums">{{ vaultBalance() | number:'1.2-2' }} ℏ</div>
+        <button class="retro-btn w-full" (click)="runAudit()" [disabled]="isAuditing()">
+          {{ isAuditing() ? '>> SCANNING...' : '[ SYNC_MIRROR_NODE ]' }}
+        </button>
+      </div>
+
+      <div class="terminal-card">
+        <div class="text-[10px] opacity-60 mb-4 tracking-[0.2em]">> SYSTEM_UTILIZATION</div>
+        <div class="progress-wrapper">
+          <p-progressBar [value]="utilization()" [showValue]="true"></p-progressBar>
+        </div>
+        <div class="mt-10 p-4 border border-green-900 bg-green-950/20">
+          <p class="text-[11px] leading-relaxed">
+            <span class="text-yellow-500 font-bold">WARNING:</span> Vault reserves are currently 
+            locked under Multi-Sig protocol 22-B. Manual release requires secondary key.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

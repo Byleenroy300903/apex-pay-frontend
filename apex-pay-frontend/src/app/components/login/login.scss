@@ -1,0 +1,93 @@
+:host {
+  display: block;
+  overflow: hidden;
+}
+
+.login-screen {
+  height: 100vh;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00ff41;
+  font-family: 'Courier New', monospace;
+  position: relative;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  z-index: 10;
+  animation: startup 0.5s ease-out;
+}
+
+.login-input {
+  width: 100%;
+  background: rgba(0, 40, 0, 0.3);
+  border: 1px solid #004400;
+  color: #00ff41;
+  padding: 15px;
+  text-align: center;
+  letter-spacing: 0.8rem;
+  font-size: 1.2rem;
+  outline: none;
+  transition: all 0.3s;
+
+  &:focus {
+    border-color: #00ff41;
+    background: rgba(0, 60, 0, 0.5);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+  }
+}
+
+.login-btn {
+  width: 100%;
+  border: 1px solid #00ff41;
+  background: transparent;
+  color: #00ff41;
+  padding: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: #00ff41;
+    color: #000;
+    box-shadow: 0 0 20px #00ff41;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: wait;
+  }
+}
+
+// CRT Scanline Effect
+.scanline {
+  width: 100%;
+  height: 100px;
+  z-index: 5;
+  background: linear-gradient(0deg, rgba(0, 255, 65, 0.05) 0%, transparent 100%);
+  position: absolute;
+  top: -100px;
+  animation: scanning 6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scanning {
+  0% { top: -100px; }
+  100% { top: 100vh; }
+}
+
+@keyframes startup {
+  0% { opacity: 0; transform: scaleY(0.01) scaleX(0); }
+  50% { opacity: 1; transform: scaleY(0.01) scaleX(1); }
+  100% { transform: scaleY(1) scaleX(1); }
+}
+
+.font-blink {
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }

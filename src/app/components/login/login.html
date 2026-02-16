@@ -1,0 +1,52 @@
+<div class="login-screen">
+  <div class="scanline"></div>
+  
+  <div class="login-container">
+    <div class="terminal-card border-2 border-green-500">
+      <div class="bg-green-500 text-black px-4 py-1 text-[10px] font-bold flex justify-between">
+        <span>SECURITY_LEVEL_UNRESTRICTED</span>
+        <span>ID: {{ '0x' + (1000 | number) }}</span>
+      </div>
+
+      <div class="p-8">
+        <div class="text-center mb-8">
+          <h1 class="text-xl tracking-[0.5rem] uppercase mb-2">Access_Denied</h1>
+          <p class="text-[10px] opacity-60 uppercase">Identity challenge required to access Admin_Nodes</p>
+        </div>
+
+        <div class="relative mb-6">
+          <label class="block text-[9px] text-green-700 uppercase mb-2">Master_Access_Key</label>
+          <input 
+            #passInput
+            type="password" 
+            (keyup.enter)="attemptLogin(passInput.value)"
+            [disabled]="isProcessing()"
+            class="login-input"
+            placeholder="••••••••••••"
+            autofocus
+          >
+          <div class="input-glow"></div>
+        </div>
+
+        <button 
+          (click)="attemptLogin(passInput.value)" 
+          [disabled]="isProcessing()"
+          class="login-btn"
+        >
+          <span *ngIf="!isProcessing()">[ GRANT_ACCESS ]</span>
+          <span *ngIf="isProcessing()" class="font-blink">VERIFYING_IDENTITY...</span>
+        </button>
+
+        <div class="mt-4 h-4 text-center">
+          <p *ngIf="error()" class="text-red-500 text-[10px] font-blink uppercase">
+            >> Authentication_Failure: Invalid_Key
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note mt-4 text-[9px] opacity-40 text-center uppercase tracking-widest">
+      Encrypted Session // AES-256-GCM
+    </div>
+  </div>
+</div>

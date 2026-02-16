@@ -1,0 +1,231 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #050505;
+  color: #00ff41;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 1.5rem;
+  position: relative;
+  overflow-x: hidden;
+
+  // --- CRT Glass Effect Layer ---
+  &::after {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
+    z-index: 100;
+    background-size: 100% 3px, 3px 100%;
+    pointer-events: none;
+  }
+}
+
+.terminal-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  animation: crt-flicker 0.1s infinite;
+}
+
+// Spaced Meta Sections (Header & Footer)
+.header-meta, .footer-meta {
+  display: flex;
+  justify-content: space-between; // Force items to edges
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 10px 0;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.header-meta {
+  border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+  margin-bottom: 25px;
+}
+
+.footer-meta {
+  margin-top: 30px;
+  border-top: 1px dashed rgba(0, 255, 65, 0.2);
+  opacity: 0.6;
+}
+
+// Layout Grids
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.terminal-card {
+  border: 1px solid #00ff41;
+  background: rgba(0, 20, 0, 0.4);
+  padding: 1.5rem;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.1);
+}
+
+// Responsive Table Container
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  
+  ::ng-deep .p-datatable {
+    min-width: 900px; // Maintain readable width on mobile
+    background: transparent;
+
+    .p-datatable-thead > tr > th {
+      background: #002200 !important;
+      color: #00ff41 !important;
+      border: 1px solid #00ff41 !important;
+      font-weight: 900;
+    }
+
+    .p-datatable-tbody > tr {
+      background: transparent !important;
+      color: #00ff41 !important;
+      border-bottom: 1px solid rgba(0, 255, 65, 0.2) !important;
+      
+      &:hover {
+        background: rgba(0, 255, 65, 0.05) !important;
+      }
+    }
+  }
+}
+
+// Mechanical Buttons
+::ng-deep .p-button {
+  background: transparent !important;
+  border: 1px solid #00ff41 !important;
+  color: #00ff41 !important;
+  border-radius: 0px !important;
+  font-family: 'Courier New', monospace !important;
+  
+  &:hover {
+    background: #00ff41 !important;
+    color: #000 !important;
+    box-shadow: 0 0 15px #00ff41;
+  }
+  
+  &:disabled {
+    opacity: 0.2;
+    border-color: #004400 !important;
+  }
+}
+
+// Retro Effects
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  background: #00ff41;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00ff41;
+  animation: pulse 2s infinite;
+}
+
+.font-blink {
+  animation: blink-step 1s step-start infinite;
+}
+
+@keyframes blink-step { 50% { opacity: 0; } }
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+}
+
+@keyframes crt-flicker {
+  0% { opacity: 0.99; }
+  100% { opacity: 1; }
+}
+
+.vintage-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85); // Slightly darker for better contrast on mobile
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px; // Ensures the popup doesn't touch screen edges
+
+  .vintage-popup {
+    border: 2px solid #00ff00;
+    background: #050505;
+    padding: 2px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+    
+    // RESPONSIVE WIDTH LOGIC
+    width: 100%;
+    max-width: 450px; // Desktop size
+    min-width: 280px; // Minimum for tiny phones
+
+    .popup-header {
+      background: #00ff00;
+      color: black;
+      font-weight: bold;
+      padding: 6px 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      // Add a scanline effect to header
+      background: linear-gradient(rgba(0,0,0,0.1) 50%, transparent 50%), #00ff00;
+      background-size: 100% 4px;
+    }
+
+    .popup-body {
+      padding: clamp(15px, 5vw, 30px); // Fluid padding
+      text-align: center;
+      overflow-wrap: break-word; // Prevents long Tx IDs from breaking layout
+
+      p {
+        font-size: clamp(0.85rem, 3vw, 1rem); // Fluid typography
+        line-height: 1.4;
+        margin-bottom: 1.5rem;
+      }
+    }
+  }
+}
+
+.terminal-btn {
+  background: transparent;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  padding: 10px 20px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: auto;
+  min-width: 120px;
+
+  &:hover {
+    background: #00ff00;
+    color: #050505;
+    box-shadow: 0 0 10px #00ff00;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// Tablet and Mobile Adjustments
+@media (max-width: 480px) {
+  .vintage-popup {
+    border-width: 1px; // Thinner border for small screens
+    
+    .popup-header {
+      font-size: 0.8rem;
+    }
+  }
+  
+  .terminal-btn {
+    width: 100%; // Stack button full width on mobile
+  }
+}

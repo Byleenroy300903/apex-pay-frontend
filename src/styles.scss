@@ -1,0 +1,77 @@
+/* PrimeNG Core Imports */
+
+
+/* Modern PrimeNG 18/19+ Imports */
+/* Only import the icons (this path is usually safe) */
+@import "primeicons/primeicons.css";
+
+/* ... keep your vintage terminal CSS below this ... */
+
+/* Vintage Terminal Theme */
+:root {
+    --bg-color: #0c0c0c;
+    --text-color: #33ff33; /* Classic Phosphor Green */
+    --border-color: #225522;
+    --font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.p-datatable {
+    background: transparent !important;
+    .p-datatable-thead > tr > th {
+        background: #1a1a1a !important;
+        color: var(--text-color) !important;
+        border: 1px solid var(--border-color) !important;
+    }
+    .p-datatable-tbody > tr {
+        background: transparent !important;
+        color: var(--text-color) !important;
+        border-bottom: 1px solid var(--border-color) !important;
+    }
+}
+
+@keyframes flicker {
+  0% { opacity: 0.97; }
+  5% { opacity: 0.95; }
+  10% { opacity: 0.99; }
+  100% { opacity: 1; }
+}
+
+.terminal-container {
+  animation: flicker 0.15s infinite;
+}
+
+/* Customizing PrimeNG Table to look like a terminal */
+.p-datatable {
+    .p-datatable-thead > tr > th {
+        background: #1a1a1a;
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        text-transform: uppercase;
+    }
+    .p-datatable-tbody > tr {
+        background: #0c0c0c;
+        color: var(--text-color);
+        border-bottom: 1px solid var(--border-color);
+    }
+}
+
+/* Scanline Effect Layer (Optional but cool) */
+body::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 2;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+}

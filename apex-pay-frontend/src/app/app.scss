@@ -1,0 +1,69 @@
+.system-container {
+  min-height: 100vh;
+  background-color: #050505;
+  display: flex;
+  flex-direction: column;
+}
+
+.terminal-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #001100;
+  border-bottom: 2px solid #00ff41;
+  box-shadow: 0 4px 10px rgba(0, 255, 65, 0.2);
+  z-index: 1000;
+
+  .nav-brand {
+    color: #00ff41;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-shadow: 0 0 8px #00ff41;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+
+    a {
+      color: rgba(0, 255, 65, 0.6);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        color: #00ff41;
+        text-shadow: 0 0 10px #00ff41;
+      }
+    }
+
+    .active-link {
+      color: #00ff41 !important;
+      font-weight: bold;
+      background: rgba(0, 255, 65, 0.1);
+      padding: 5px 10px;
+      border: 1px solid #00ff41;
+      box-shadow: inset 0 0 5px #00ff41;
+    }
+  }
+}
+
+.content-area {
+  flex: 1;
+}
+
+// Responsiveness for Navbar
+@media (max-width: 768px) {
+  .terminal-navbar {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    
+    .nav-links {
+      font-size: 0.8rem;
+      gap: 0.5rem;
+    }
+  }
+}
