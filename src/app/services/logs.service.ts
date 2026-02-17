@@ -18,7 +18,7 @@ export class LogService {
 
   private connectToBackendStream() {
   // Use 'withCredentials: true' if your Java backend has config.setAllowCredentials(true)
-  this.eventSource = new EventSource('https://backend-whrl.onrender.com/api/employees/api/logs/stream', {
+  this.eventSource = new EventSource('https://backend-whrl.onrender.com/api/logs/stream', {
     withCredentials: true 
   });
 
