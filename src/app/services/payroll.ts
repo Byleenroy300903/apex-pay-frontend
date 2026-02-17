@@ -10,7 +10,7 @@ import { TransactionRecord } from '../models/history';
 
 
 export class PayrollService {
-  private apiUrl = 'https://backend-whrl.onrender.com/api/employees/api/employees';
+  private apiUrl = 'https://backend-whrl.onrender.com/api/employees';
   private http = inject(HttpClient);
 
   // 1. Get all employees (Matches @GetMapping)
