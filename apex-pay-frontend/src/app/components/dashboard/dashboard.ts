@@ -17,6 +17,8 @@ import { TimeAgoPipe } from '../../pipe/time-ago.pipe';
   styleUrl: 'dashboard.scss'
 })
 export class DashboardComponent implements OnInit {
+  isLoading = signal(true); // Initialized to true for Page Load
+  isActionPending = signal(false); // For specific button actions
 
   private timeTicker?: Subscription;
 
@@ -48,6 +50,8 @@ showHistoryModal = signal(false);
       this.isLoading.set(false);
       
       // NEW: After getting DB data, sync with the real Smart Contract state
+      // Add a slight delay so the user actually sees the cool loader
+        setTimeout(() => this.isLoading.set(false), 800);
       this.syncWithHederaLedger();
     },
     error: () => this.isLoading.set(false)
@@ -98,6 +102,8 @@ private updateEmployeeStatusLocally(employeeId: string, approved: boolean) {
 }
 
   onApprove(employeeId: string) {
+    this.isActionPending.set(true);
+    this.isLoading.set(true); // Trigger the overlay
   const contractId = '0.0.7925123';
   this.payrollService.approve(contractId, employeeId).subscribe({
     next: () => {
@@ -106,6 +112,9 @@ private updateEmployeeStatusLocally(employeeId: string, approved: boolean) {
       
       // FIX: Manually update the signal so the [disabled] attribute unlocks the button
       this.updateEmployeeStatusLocally(employeeId, true);
+
+      this.isLoading.set(false);
+        this.isActionPending.set(false);
       
       this.triggerVintagePopup("AI_ORACLE_CONSENSUS_REACHED: VALIDATION_FINALIZED");
         this.logService.addLog('PAYROLL', `VALIDATED: ${employeeId}`, 'SUCCESS');
@@ -125,18 +134,24 @@ triggerVintagePopup(msg: string) {
   }
 
   onWithdraw(employeeId: string) {
+    this.isActionPending.set(true);
+    this.isLoading.set(true);
   const contractId = '0.0.7925123';
   this.payrollService.withdraw(contractId, employeeId, 2.0).subscribe({
     next: () => {
       this.logService.addLog('PAYROLL', `FUNDS_RELEASED: ${employeeId} // 2.0 HBAR`, 'SUCCESS');
       
       // VINTAGE POPUP INSTEAD OF ALERT
+      this.isLoading.set(false);
+        this.isActionPending.set(false);
       this.triggerVintagePopup(`TRANSACTION_COMPLETE: 2.0 HBAR TRANSFERRED TO NODE ${employeeId}`);
       
       // Update local UI immediately
       this.loadEmployees(); 
     },
-    error: () => this.logService.addLog('PAYROLL', `RELEASE_FAILED: ${employeeId}`, 'FAIL')
+    error: () => {this.logService.addLog('PAYROLL', `RELEASE_FAILED: ${employeeId}`, 'FAIL');
+                 this.isLoading.set(false);
+        this.isActionPending.set(false);}
   });
 }
 
