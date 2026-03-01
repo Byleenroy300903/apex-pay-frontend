@@ -224,6 +224,88 @@
       font-size: 0.8rem;
     }
   }
+
+  // Loader
+
+  // --- VINTAGE CRT LOADER STYLES ---
+.loader-overlay {
+  background: rgba(0, 8, 0, 0.98) !important;
+  flex-direction: column;
+  backdrop-filter: blur(4px);
+}
+
+.loader-content {
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.loader-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(0, 255, 65, 0.1);
+  border-left-color: #00ff41;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  animation: spin 0.6s linear infinite;
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+}
+
+.loader-text {
+  font-size: 14px;
+  letter-spacing: 3px;
+  margin-bottom: 12px;
+  color: #00ff41;
+  text-shadow: 0 0 8px #00ff41;
+}
+
+// THE MECHANICAL LOADING BAR
+.loading-bar-container {
+  width: 80%;
+  height: 12px;
+  border: 1px solid #00ff41;
+  margin: 15px auto;
+  padding: 2px;
+  position: relative;
+  background: rgba(0, 40, 0, 0.3);
+}
+
+.loading-bar-fill {
+  height: 100%;
+  background: #00ff41;
+  width: 0%; // Initial
+  animation: fill-bar 3s ease-in-out infinite;
+  box-shadow: 0 0 10px #00ff41;
+  
+  // Segmented look (Old School)
+  background-image: linear-gradient(
+    90deg, 
+    rgba(0,0,0,0.3) 1px, 
+    transparent 1px
+  );
+  background-size: 8px 100%;
+}
+
+.blur-content {
+  filter: blur(3px) grayscale(0.5);
+  pointer-events: none; // Disable all clicks globally during load
+  transition: filter 0.4s ease;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes fill-bar {
+  0% { width: 0%; }
+  50% { width: 70%; }
+  100% { width: 100%; }
+}
+
+.loader-subtext {
+  font-size: 9px;
+  opacity: 0.6;
+  letter-spacing: 1px;
+  font-family: 'Courier New', monospace;
+}
   
   .terminal-btn {
     width: 100%; // Stack button full width on mobile
