@@ -1,4 +1,19 @@
-<div class="terminal-wrapper">
+<div class="vintage-overlay loader-overlay" *ngIf="isLoading() || isActionPending()">
+  <div class="loader-content">
+    <div class="scanline"></div>
+    <div class="loader-spinner"></div>
+    <div class="loader-text font-blink">
+      {{ isActionPending() ? 'EXECUTING_SMART_CONTRACT...' : 'INITIALIZING_SECURE_LINK...' }}
+    </div>
+    <div class="loader-subtext">NODE_SYNC_IN_PROGRESS // HEDERA_TESTNET_792</div>
+    
+    <div class="loading-bar-container">
+      <div class="loading-bar-fill"></div>
+    </div>
+  </div>
+</div>
+
+<div class="terminal-wrapper" [class.blur-content]="isLoading() || isActionPending()">
   <div class="header">
     <h1 class="flex items-center gap-3 text-2xl font-bold uppercase tracking-widest">
       <span class="status-indicator"></span> 
@@ -39,43 +54,45 @@
             <th>OPERATIONS</th>
           </tr>
         </ng-template>
+        
         <ng-template pTemplate="body" let-emp>
           <tr (click)="viewEmployeeDetails(emp)" class="cursor-pointer hover:bg-green-500/5 transition-colors group">
-  <td class="font-bold text-green-500 group-hover:text-green-300">
-    > {{ emp.fullName }}
-  </td>
+            <td class="font-bold text-green-500 group-hover:text-green-300">
+              > {{ emp.fullName }}
+            </td>
 
-  <td class="font-mono opacity-80">{{ emp.hederaAccountId }}</td>
+            <td class="font-mono opacity-80">{{ emp.hederaAccountId }}</td>
 
-  <td class="font-mono text-xs opacity-50">
-    0x{{ emp.id ? emp.id.toString().substring(0,8) : 'NEW_NODE' }}...FF
-  </td>
+            <td class="font-mono text-xs opacity-50">
+              0x{{ emp.id ? emp.id.toString().substring(0,8) : 'NEW_NODE' }}...FF
+            </td>
 
-  <td>
-    <span [class]="emp.isApprovedByAI ? 'text-green-400' : 'text-yellow-600 font-blink'">
-      {{ emp.isApprovedByAI ? '>> APPROVED' : '>> PENDING' }}
-    </span>
-  </td>
+            <td>
+              <span [class]="emp.isApprovedByAI ? 'text-green-400' : 'text-yellow-600 font-blink'">
+                {{ emp.isApprovedByAI ? '>> APPROVED' : '>> PENDING' }}
+              </span>
+            </td>
 
-  <td (click)="$event.stopPropagation()">
-    <div class="flex gap-2">
-      <button pButton 
-              icon="pi pi-shield" 
-              label="VALIDATE" 
-              class="p-button-sm p-button-outlined" 
-              (click)="onApprove(emp.hederaAccountId)">
-      </button>
-      
-      <button pButton 
-              icon="pi pi-unlock" 
-              label="RELEASE" 
-              class="p-button-sm p-button-outlined" 
-              [disabled]="!emp.isApprovedByAI" 
-              (click)="onWithdraw(emp.hederaAccountId)">
-      </button>
-    </div>
-  </td>
-</tr>
+            <td (click)="$event.stopPropagation()">
+              <div class="flex gap-2">
+                <button pButton 
+                        icon="pi pi-shield" 
+                        label="VALIDATE" 
+                        class="p-button-sm p-button-outlined" 
+                        [disabled]="isLoading() || isActionPending()"
+                        (click)="onApprove(emp.hederaAccountId)">
+                </button>
+                
+                <button pButton 
+                        icon="pi pi-unlock" 
+                        label="RELEASE" 
+                        class="p-button-sm p-button-outlined" 
+                        [disabled]="!emp.isApprovedByAI || isLoading() || isActionPending()" 
+                        (click)="onWithdraw(emp.hederaAccountId)">
+                </button>
+              </div>
+            </td>
+          </tr>
         </ng-template>
       </p-table>
     </div>
@@ -109,16 +126,13 @@
         <div *ngFor="let item of selectedEmployeeHistory()" class="border-b border-green-900/30 py-3 flex justify-between items-center text-left">
           <div class="flex flex-col">
             <span class="text-[10px] opacity-50 uppercase tracking-widest">{{ item.event }}</span>
-            
             <span class="text-[9px] text-green-700 font-mono" *ngIf="item.date">
               {{ item.date | timeAgo }}
             </span>
           </div>
-          
           <span class="text-green-400 font-mono text-sm">{{ item.value }}</span>
         </div>
       </div>
-      
       <button class="terminal-btn mt-6 w-full" (click)="closeModal()">
         TERMINATE_DATA_STREAM
       </button>
