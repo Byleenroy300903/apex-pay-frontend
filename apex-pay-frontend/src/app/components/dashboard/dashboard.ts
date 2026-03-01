@@ -36,7 +36,7 @@ showHistoryModal = signal(false);
   private logService = inject(LogService); 
   
   employees = signal<Employee[]>([]);
-  isLoading = signal(false);
+  //isLoading = signal(false);
 
   ngOnInit() {
     this.loadEmployees();
