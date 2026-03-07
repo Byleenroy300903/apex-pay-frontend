@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
     CommonModule, 
     RouterOutlet, 
     RouterLink,       // Added this
-    RouterLinkActive  // Added this
+    RouterLinkActive,  // Added this
   ],
   template: `
     <div class="system-container">

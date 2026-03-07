@@ -1,0 +1,17 @@
+<div class="bot-terminal">
+  <div class="terminal-header">ORACLE_QUERY_INTERFACE</div>
+  
+  <div class="terminal-body" #scrollMe>
+    <div *ngFor="let msg of messages()" [ngClass]="'msg-' + msg.role">
+      <span class="prefix" *ngIf="msg.role === 'bot'">[AI] >> </span>
+      <span class="prefix" *ngIf="msg.role === 'user'">[USER] >> </span>
+      {{ msg.text }}
+    </div>
+  </div>
+
+  <div class="terminal-input-area">
+    <span class="prompt">></span>
+    <input type="text" [(ngModel)]="userInput" (keyup.enter)="handleInput()" 
+           placeholder="TYPE_COMMAND..." autofocus>
+  </div>
+</div>

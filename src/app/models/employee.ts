@@ -7,4 +7,5 @@ export interface Employee {
   vaultBalance: number;
   taxCountry: string;
   baseSalaryUsd: number;
+  balance: number;
 }

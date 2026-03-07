@@ -1,3 +1,13 @@
+<div class="loader-overlay" *ngIf="isLoading()">
+  <div class="loader-content">
+    <div class="terminal-loader-text">INITIALIZING_SECURE_CONNECTION...</div>
+    <div class="loading-bar">
+      <div class="loading-bar-fill"></div>
+    </div>
+    <div class="status-msg text-xs mt-2 opacity-50">BYPASSING_OFFICE_FIREWALL...</div>
+  </div>
+</div>
+
 <div class="terminal-wrapper">
   <div class="header">
     <h1 class="flex items-center gap-3 text-2xl font-bold uppercase tracking-widest">
@@ -14,9 +24,9 @@
 
   <div class="stats-grid">
     <div class="terminal-card">
-      <div class="text-xs opacity-50 uppercase tracking-tighter">Vault_HBAR_Balance</div>
-      <div class="text-3xl font-bold">1,240.50 ℏ</div>
-    </div>
+  <div class="text-xs opacity-50 uppercase tracking-tighter">Vault_HBAR_Balance</div>
+  <div class="text-3xl font-bold">{{ vaultBalance() }} ℏ</div>
+</div>
     <div class="terminal-card">
       <div class="text-xs opacity-50 uppercase tracking-tighter">Compliance_Status</div>
       <div class="text-3xl text-yellow-400">ENFORCED</div>
@@ -28,7 +38,17 @@
   </div>
 
   <div class="terminal-card p-0">
-    <div class="table-container">
+    <div class="terminal-card p-0 relative overflow-hidden min-h-[400px]">
+  
+  <div class="table-loader-overlay" *ngIf="isTableLoading()">
+    <div class="scanner-line"></div>
+    <div class="flex flex-col items-center gap-2">
+      <i class="pi pi-spin pi-spinner text-2xl"></i>
+      <span class="text-xs tracking-[0.3em] animate-pulse">RECONCILING_LEDGER...</span>
+    </div>
+  </div>
+
+  <div class="table-container" [class.opacity-20]="isTableLoading()">
       <p-table [value]="displayEmployees()" class="retro-table">
         <ng-template pTemplate="header">
           <tr>
@@ -60,24 +80,26 @@
   <td (click)="$event.stopPropagation()">
     <div class="flex gap-2">
       <button pButton 
-              icon="pi pi-shield" 
-              label="VALIDATE" 
-              class="p-button-sm p-button-outlined" 
-              (click)="onApprove(emp.hederaAccountId)">
-      </button>
-      
-      <button pButton 
-              icon="pi pi-unlock" 
-              label="RELEASE" 
-              class="p-button-sm p-button-outlined" 
-              [disabled]="!emp.isApprovedByAI" 
-              (click)="onWithdraw(emp.hederaAccountId)">
-      </button>
+        [icon]="loadingStates()['approve-' + emp.hederaAccountId] ? 'pi pi-spin pi-spinner' : 'pi pi-shield'" 
+        [label]="loadingStates()['approve-' + emp.hederaAccountId] ? 'VALIDATING...' : 'VALIDATE'" 
+        class="retro-btn btn-sm" 
+        [disabled]="loadingStates()['approve-' + emp.hederaAccountId]"
+        (click)="onApprove(emp.hederaAccountId)">
+</button>
+
+<button pButton 
+        [icon]="loadingStates()['withdraw-' + emp.hederaAccountId] ? 'pi pi-spin pi-spinner' : 'pi pi-unlock'" 
+        [label]="loadingStates()['withdraw-' + emp.hederaAccountId] ? 'PROCESSING...' : 'RELEASE'" 
+        class="retro-btn btn-sm" 
+        [disabled]="!emp.isApprovedByAI || loadingStates()['withdraw-' + emp.hederaAccountId]" 
+        (click)="onWithdraw(emp.hederaAccountId)">
+</button>
     </div>
   </td>
 </tr>
         </ng-template>
       </p-table>
+    </div>
     </div>
   </div>
 

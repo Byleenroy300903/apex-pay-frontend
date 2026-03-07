@@ -18,6 +18,13 @@ import { TimeAgoPipe } from '../../pipe/time-ago.pipe';
 })
 export class DashboardComponent implements OnInit {
 
+loadingStates = signal<Record<string, boolean>>({});
+  isActionPending = signal(false);
+
+  
+  // NEW: Dynamic Vault Balance
+  vaultBalance = signal<string>("0.00");
+
   private timeTicker?: Subscription;
 
   private timeUpdateSubscription?: Subscription;
@@ -35,22 +42,35 @@ showHistoryModal = signal(false);
   
   employees = signal<Employee[]>([]);
   isLoading = signal(false);
+  isTableLoading = signal(false); 
 
   ngOnInit() {
     this.loadEmployees();
   }
 
   loadEmployees() {
-  this.isLoading.set(true);
+  this.isTableLoading.set(true);
   this.payrollService.getEmployees().subscribe({
-    next: (data) => {
+    next: (data: any[]) => {
       this.employees.set(data);
-      this.isLoading.set(false);
       
-      // NEW: After getting DB data, sync with the real Smart Contract state
-      this.syncWithHederaLedger();
+      // FIX: Use 'baseSalaryUsd' instead of 'balance'
+      const total = data.reduce((sum, emp) => sum + (Number(emp.baseSalaryUsd) || 0), 0);
+      
+      this.vaultBalance.set(total.toLocaleString('en-US', { 
+        minimumFractionDigits: 2 
+      }));
+
+      this.isTableLoading.set(false);
+      if (this.isLoading()) {
+        setTimeout(() => this.isLoading.set(false), 1500);
+      }
     },
-    error: () => this.isLoading.set(false)
+    error: (err) => {
+      console.error("Fetch failed", err);
+      this.isTableLoading.set(false);
+      this.isLoading.set(false);
+    }
   });
 }
 
@@ -97,46 +117,79 @@ private updateEmployeeStatusLocally(employeeId: string, approved: boolean) {
   );
 }
 
-  onApprove(employeeId: string) {
-  const contractId = '0.0.7925123';
-  this.payrollService.approve(contractId, employeeId).subscribe({
-    next: () => {
-      // PUSH TO TERMINAL
-      this.logService.addLog('PAYROLL', `AI_APPROVAL_GRANTED: ${employeeId}`, 'SUCCESS');
+//   onApprove(employeeId: string) {
+//   const contractId = '0.0.7925123';
+//   this.setLoading(contractId, true);
+//   this.payrollService.approve(contractId, employeeId).subscribe({
+//     next: () => {
+//       // PUSH TO TERMINAL
+//       this.logService.addLog('PAYROLL', `AI_APPROVAL_GRANTED: ${employeeId}`, 'SUCCESS');
       
-      // FIX: Manually update the signal so the [disabled] attribute unlocks the button
-      this.updateEmployeeStatusLocally(employeeId, true);
+//       // FIX: Manually update the signal so the [disabled] attribute unlocks the button
+//       this.updateEmployeeStatusLocally(employeeId, true);
       
-      this.triggerVintagePopup("AI_ORACLE_CONSENSUS_REACHED: VALIDATION_FINALIZED");
-        this.logService.addLog('PAYROLL', `VALIDATED: ${employeeId}`, 'SUCCESS');
+//       this.triggerVintagePopup("AI_ORACLE_CONSENSUS_REACHED: VALIDATION_FINALIZED");
+//         this.logService.addLog('PAYROLL', `VALIDATED: ${employeeId}`, 'SUCCESS');
+//         this.setLoading(contractId, false);
       
-      // IMPORTANT: Don't call this.loadEmployees() here! 
-      // If you do, it fetches the 'false' status from your DB and locks the button again.
-    },
-    error: (err) => {
-      this.logService.addLog('PAYROLL', `AI_APPROVAL_FAILED: ${employeeId}`, 'FAIL');
-    }
-  });
-}
+//       // IMPORTANT: Don't call this.loadEmployees() here! 
+//       // If you do, it fetches the 'false' status from your DB and locks the button again.
+//     },
+//     error: (err) => {
+//       this.logService.addLog('PAYROLL', `AI_APPROVAL_FAILED: ${employeeId}`, 'FAIL');
+//       this.setLoading(contractId, false)
+//     }
+//   });
+// }
 
 triggerVintagePopup(msg: string) {
     this.popupMessage = msg;
     this.showPopup = true;
   }
 
-  onWithdraw(employeeId: string) {
+ onWithdraw(employeeId: string) {
   const contractId = '0.0.7925123';
+  // Use a namespaced key to prevent collisions
+  const loadingKey = `withdraw-${employeeId}`; 
+  
+  this.setLoading(loadingKey, true);
+  
   this.payrollService.withdraw(contractId, employeeId, 2.0).subscribe({
     next: () => {
       this.logService.addLog('PAYROLL', `FUNDS_RELEASED: ${employeeId} // 2.0 HBAR`, 'SUCCESS');
-      
-      // VINTAGE POPUP INSTEAD OF ALERT
       this.triggerVintagePopup(`TRANSACTION_COMPLETE: 2.0 HBAR TRANSFERRED TO NODE ${employeeId}`);
       
-      // Update local UI immediately
       this.loadEmployees(); 
+      this.setLoading(loadingKey, false);
     },
-    error: () => this.logService.addLog('PAYROLL', `RELEASE_FAILED: ${employeeId}`, 'FAIL')
+    error: () => {
+      this.logService.addLog('PAYROLL', `RELEASE_FAILED: ${employeeId}`, 'FAIL');
+      this.setLoading(loadingKey, false);
+    }
+  });
+}
+
+onApprove(employeeId: string) {
+  const contractId = '0.0.7925123';
+  // FIX: Use employeeId here, not contractId!
+  const loadingKey = `approve-${employeeId}`; 
+  
+  this.setLoading(loadingKey, true);
+  
+  this.payrollService.approve(contractId, employeeId).subscribe({
+    next: () => {
+      this.logService.addLog('PAYROLL', `AI_APPROVAL_GRANTED: ${employeeId}`, 'SUCCESS');
+      
+      // Update local UI
+      this.updateEmployeeStatusLocally(employeeId, true);
+      
+      this.triggerVintagePopup("AI_ORACLE_CONSENSUS_REACHED: VALIDATION_FINALIZED");
+      this.setLoading(loadingKey, false);
+    },
+    error: (err) => {
+      this.logService.addLog('PAYROLL', `AI_APPROVAL_FAILED: ${employeeId}`, 'FAIL');
+      this.setLoading(loadingKey, false);
+    }
   });
 }
 
@@ -192,6 +245,9 @@ viewEmployeeDetails(emp: any) {
   });
 }
 
+private setLoading(id: string, state: boolean) {
+  this.loadingStates.update(prev => ({ ...prev, [id]: state }));
+}
 
 closeModal() {
     this.showHistoryModal.set(false);

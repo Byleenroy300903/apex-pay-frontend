@@ -1,31 +1,118 @@
-.terminal-wrapper {
-  animation: startup 0.5s ease-out;
+// 1. Core Layout & CRT Effects
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #020a02;
+  color: #00ff41;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 2rem;
+  position: relative;
+  overflow-x: hidden;
+
+  // Global Scanline Overlay (Hardware Texture)
+  &::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+    z-index: 1000;
+    background-size: 100% 3px, 3px 100%;
+    pointer-events: none;
+  }
 }
 
-// Custom Retro Button (Bypassing PrimeNG defaults)
+.terminal-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  animation: crt-power-on 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+// 2. The Locked State (Aggressive Warning Style)
+.security-terminal {
+  background: rgba(30, 0, 0, 0.4) !important;
+  border: 2px solid #ff0000 !important;
+  box-shadow: 0 0 40px rgba(255, 0, 0, 0.15), inset 0 0 20px rgba(255, 0, 0, 0.1) !important;
+  padding: 3rem;
+  text-align: center;
+  position: relative;
+
+  .scanline {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 2px;
+    background: rgba(255, 0, 0, 0.3);
+    box-shadow: 0 0 10px #ff0000;
+    animation: scanning 4s linear infinite;
+  }
+
+  .terminal-input {
+    background: #000;
+    border: 1px solid #ff0000;
+    color: #ff0000;
+    font-size: 2.5rem;
+    letter-spacing: 1.5rem;
+    padding: 15px;
+    text-shadow: 0 0 10px #ff0000;
+    transition: all 0.3s ease;
+    
+    &:focus {
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+      background: rgba(40, 0, 0, 0.3);
+    }
+  }
+}
+
+// 3. The Unlocked State (Green Phosphor Style)
+.header {
+  h1 {
+    text-shadow: 2px 0px 1px rgba(255,0,0,0.5), -2px 0px 1px rgba(0,0,255,0.5), 0 0 10px #00ff41;
+  }
+}
+
+.terminal-card {
+  background: rgba(0, 20, 0, 0.6);
+  border: 1px solid #00ff41;
+  padding: 1.5rem;
+  position: relative;
+  backdrop-filter: blur(2px);
+
+  &.phosphor-glow {
+    border-width: 2px;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.15), inset 0 0 10px rgba(0, 255, 65, 0.05);
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+// 4. Custom Components & Inputs
 .retro-btn {
   background: transparent;
   border: 1px solid #00ff41;
   color: #00ff41;
-  padding: 12px 20px;
-  font-family: 'Courier New', monospace;
-  font-weight: bold;
+  padding: 14px 20px;
+  font-family: inherit;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   cursor: pointer;
-  position: relative;
   transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
     background: #00ff41;
     color: #000;
-    box-shadow: 0 0 20px #00ff41;
+    box-shadow: 0 0 25px #00ff41;
   }
 
   &:disabled {
     opacity: 0.3;
-    cursor: not-allowed;
     border-color: #004400;
+    cursor: wait;
   }
 
   &.btn-danger {
@@ -34,64 +121,138 @@
     &:hover {
       background: #ff0000;
       color: #000;
-      box-shadow: 0 0 20px #ff0000;
+      box-shadow: 0 0 25px #ff0000;
     }
   }
-}
-
-// Hardware-style Input
-.terminal-input {
-  background: #000;
-  border: 2px solid #004400;
-  border-bottom: 2px solid #00ff41;
-  color: #00ff41;
-  font-size: 2rem;
-  letter-spacing: 1rem;
-  padding: 10px;
-  width: 100%;
-  text-align: center;
-  outline: none;
-  
-  &:focus {
-    border-color: #00ff41;
-    box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
-  }
-}
-
-// Glowing Container
-.phosphor-glow {
-  box-shadow: inset 0 0 30px rgba(0, 255, 65, 0.05);
-  border: 1px solid #00ff41 !important;
 }
 
 .retro-link {
   background: none;
   border: none;
-  text-decoration: underline;
+  border-bottom: 1px dashed #ff0000;
   cursor: pointer;
-  font-family: inherit;
-  font-size: inherit;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-// Progress Bar Override
+// 5. PrimeNG Override (The "Mechanical" look)
 ::ng-deep .p-progressbar {
-  background: #001a00 !important;
+  background: rgba(0, 40, 0, 0.3) !important;
   border: 1px solid #00ff41;
+  height: 35px !important;
   border-radius: 0 !important;
-  height: 30px !important;
 
   .p-progressbar-value {
     background: #00ff41 !important;
-    box-shadow: 0 0 10px #00ff41;
+    box-shadow: 0 0 15px #00ff41;
+    position: relative;
+    
+    // Add "loading bar" stripes
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background-image: linear-gradient(
+        -45deg, 
+        rgba(0, 0, 0, 0.2) 25%, 
+        transparent 25%, 
+        transparent 50%, 
+        rgba(0, 0, 0, 0.2) 50%, 
+        rgba(0, 0, 0, 0.2) 75%, 
+        transparent 75%, 
+        transparent
+      );
+      background-size: 30px 30px;
+    }
   }
-  
+
   .p-progressbar-label {
     color: #000 !important;
     font-weight: 900;
+    font-size: 14px;
+    z-index: 10;
   }
 }
 
-@keyframes startup {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+// 6. Animations
+@keyframes scanning {
+  0% { top: 0; opacity: 0; }
+  50% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes crt-power-on {
+  0% { transform: scaleY(0.005) scaleX(0); filter: brightness(3); opacity: 0; }
+  50% { transform: scaleY(0.005) scaleX(1); filter: brightness(3); opacity: 1; }
+  100% { transform: scaleY(1) scaleX(1); filter: brightness(1); opacity: 1; }
+}
+
+.font-blink {
+  animation: blink-step 1s step-end infinite;
+}
+
+@keyframes blink-step {
+  50% { opacity: 0; }
+}
+
+.fade-in {
+  animation: phosphor-bloom 0.8s ease-out;
+}
+
+@keyframes phosphor-bloom {
+  from { filter: blur(5px) brightness(2); opacity: 0; }
+  to { filter: blur(0) brightness(1); opacity: 1; }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+}
+.retro-link {
+  background: transparent;
+  border: 1px solid rgba(255, 0, 0, 0.5);
+  color: #ff0000;
+  padding: 4px 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+  margin-left: 15px;
+
+  // The "Kill Switch" Hover Effect
+  &:hover {
+    background: rgba(255, 0, 0, 0.1);
+    border-color: #ff0000;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    text-shadow: 0 0 5px #ff0000;
+    transform: scale(1.05);
+
+    // Glitch animation on hover
+    &::after {
+      content: "[ TERMINATE_LINK ]";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #ff0000;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: glitch-switch 0.3s steps(2) infinite;
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+    background: #ff0000;
+    color: #000;
+  }
 }

@@ -229,3 +229,91 @@
     width: 100%; // Stack button full width on mobile
   }
 }
+
+.loader-overlay {
+  position: fixed; // Covers the whole screen
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #050505; // Solid black background
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999; // Ensures it is ON TOP of everything
+  color: #00ff41;
+  font-family: 'Courier New', monospace;
+
+  .loader-content {
+    width: 300px;
+    text-align: center;
+  }
+
+  .loading-bar {
+    width: 100%;
+    height: 4px;
+    border: 1px solid #00ff41;
+    margin: 15px 0;
+    position: relative;
+    background: rgba(0, 255, 65, 0.1);
+
+    .loading-bar-fill {
+      height: 100%;
+      background: #00ff41;
+      box-shadow: 0 0 10px #00ff41;
+      width: 0%;
+      // This animation makes the bar grow over 2 seconds
+      animation: fill-bar 2s ease-in-out forwards;
+    }
+  }
+}
+
+@keyframes fill-bar {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+// Table-specific loader
+.table-loader-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 5, 5, 0.85); // Dark overlay
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(4px);
+
+  .scanner-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #00ff41;
+    box-shadow: 0 0 15px #00ff41;
+    animation: scan-move 1.2s linear infinite; // Matches your 1.2s requirement
+  }
+}
+
+// Ensure the card can contain the absolute loader
+.terminal-card.relative {
+  position: relative;
+}
+
+@keyframes scan-move {
+  0% { top: 0%; opacity: 0; }
+  50% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+// Add PrimeNG Spinner Rotation if not already present
+.pi-spin {
+  animation: fa-spin 2s infinite linear;
+}
+
+@keyframes fa-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(359deg); }
+}

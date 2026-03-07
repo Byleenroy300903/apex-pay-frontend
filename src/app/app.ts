@@ -24,8 +24,11 @@ import { CommonModule } from '@angular/common';
           <a routerLink="/admin" routerLinkActive="active-link">
             [ 03_ADMIN_PANEL ]
           </a>
+          <a routerLink="/terminal_bot" routerLinkActive="active-link">
+            [ 04_TERMINAL_BOTL ]
+          </a>
           <a routerLink="/logs" routerLinkActive="active-link">
-            [ 04_SYSTEM_LOGS ]
+            [ 05_SYSTEM_LOGS ]
           </a>
         </div>
       </nav>
